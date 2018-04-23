@@ -1,8 +1,6 @@
 package com.github.mautini.pickaxe.extractor;
 
-import com.github.mautini.pickaxe.SchemaToThingConverter;
 import com.github.mautini.pickaxe.model.Schema;
-import com.google.schemaorg.core.Thing;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -23,14 +21,11 @@ public class MicrodataExtractor implements Extractor {
 
     private static final String ITEM_PROP = "itemprop";
 
-    private static final String HYPERLINK_TAG = "a";
-
     @Override
-    public List<Thing> getThings(Document document) {
+    public List<Schema> getThings(Document document) {
         Elements elements = getElements(document);
         return elements.stream()
                 .map(this::getTree)
-                .map(SchemaToThingConverter::convert)
                 .collect(Collectors.toList());
     }
 
@@ -76,7 +71,7 @@ public class MicrodataExtractor implements Extractor {
     }
 
     private String getValue(Element element) {
-        if (HYPERLINK_TAG.equals(element.tagName()) && element.hasAttr("href")) {
+        if (element.hasAttr("href")) {
             return element.attr("href");
         }
 

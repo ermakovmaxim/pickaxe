@@ -1,14 +1,20 @@
-package com.github.mautini.pickaxe;
+package com.github.mautini.pickaxe.converter;
 
 import com.github.mautini.pickaxe.model.Schema;
 import com.google.schemaorg.core.CoreConstants;
 import com.google.schemaorg.core.CoreFactory;
 import com.google.schemaorg.core.Thing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class SchemaToThingConverter {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchemaToThingConverter.class);
 
     private static final String PACKAGE_SCHEMA_ORG = "com.google.schemaorg.core";
 
@@ -44,9 +50,13 @@ public class SchemaToThingConverter {
 
         // Set all the properties
         for (String propertyName : schema.getProperties().keySet()) {
-            String methodName = String.format("add%s", capitalize(propertyName));
+            String methodName = String.format("add%s", capitalize(Arrays.asList(propertyName.split("-")).stream().map(part -> capitalize(part)).collect(Collectors.joining())));
             Method method = builderClass.getMethod(methodName, String.class);
-            method.invoke(builder, schema.getProperties().get(propertyName).get(0));
+            try {
+                method.invoke(builder, schema.getProperties().get(propertyName).get(0));
+            } catch (Exception e) {
+                LOGGER.warn(String.format("No such method %s in class %s", methodName, builder.getClass().getName()));
+            }
         }
     }
 
@@ -57,8 +67,14 @@ public class SchemaToThingConverter {
             Thing thing = convert(child);
 
             String methodName = String.format("add%s", capitalize(child.getPropertyName()));
-            Method method = builderClass.getMethod(methodName, getInterfaceClass(getTypeName(child)));
+            Method method = null;
+            try {
+                method = builderClass.getMethod(methodName, getInterfaceClass(getTypeName(child)));
+            } catch (Exception e) {
+                LOGGER.warn(String.format("No such method %s in class %s", methodName, getTypeName(child)));
+            }
             method.invoke(builder, thing);
+
         }
     }
 

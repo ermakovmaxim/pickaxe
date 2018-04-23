@@ -1,10 +1,13 @@
 package com.github.mautini.pickaxe.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 import java.util.Map;
 
 public class Schema {
 
+    @SerializedName("@type")
     private String type;
 
     private String propertyName;

@@ -20,7 +20,7 @@
         <slf4j.version>1.7.25</slf4j.version>
         <jsoup.version>1.11.2</jsoup.version>
         <schemaorg-java.version>1.0.1</schemaorg-java.version>
-        <junit.version>5.0.3</junit.version>
+        <junit.version>5.1.1</junit.version>
     </properties>
 
     <dependencies>
@@ -60,13 +60,28 @@
             <version>${schemaorg-java.version}</version>
         </dependency>
 
-        <!-- Junit -->
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.version}</version>
+            <groupId>org.apache.any23</groupId>
+            <artifactId>apache-any23-core</artifactId>
+            <version>2.2</version>
         </dependency>
+
+        <!-- Junit -->
+        <!--<dependency>-->
+            <!--<groupId>org.junit.jupiter</groupId>-->
+            <!--<artifactId>junit-jupiter-api</artifactId>-->
+            <!--<version>${junit.version}</version>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
+
+
 
     <build>
         <plugins>
